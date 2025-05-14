@@ -1,0 +1,105 @@
+<!-- Ant build file for running CustomerList JUnit tests with JaCoCo -->
+<!-- Huiping Cao, Feb. 5 2025 updated based on versioin created by Dr. Jonathan Cook in November 2024 -->
+
+<!-- Example to run this build file -->
+<!-- $ ant compile                  -->
+<!-- $ ant run                      -->
+<!-- $ ant                          -->
+<!-- $ ant codeclean                -->
+<!-- $ ant clean                    -->
+
+<project name="customerlist" default="report">
+
+   <!-- JUnit location. CHANGE THIS FOR YOUR SYSTEM -->
+   <property name="junitjar" location="tools/junit-platform-console-standalone-1.11.4.jar"/>
+   <!-- JaCoCo locations: CHANGE THESE FOR YOUR SYSTEM -->
+   <property name="jacocodir" location="/home/ugrad11/serodriguez/tools/jacoco-0.8.12/lib"/>
+   <property name="jacococlijar" location="/home/ugrad11/serodriguez/tools/jacoco-0.8.12/lib/jacococli.jar"/>
+
+   <!-- standard compile task, but turn debugging on for source viewing -->
+   <!-- class files are output into a "class" folder, so that Jacoco
+        instrumentation can handle them without recursion conflicts -->
+   <target name="compile" description="compile the source">
+      <mkdir dir="class"/>
+      <javac srcdir="." destdir="class" includeantruntime="false" 
+             debug="true" classpath="${junitjar}"/>
+   </target>
+
+   <!-- use Jacoco to do offline instrumentation (instruments the class
+        files and then stores instrumented class files in "covinst" folder) -->
+   <target name="instrument" description="add coverage instrumentation" depends="compile">
+      <java jar="${jacococlijar}" classpath="./class" fork="true">
+         <arg value="instrument"/>
+         <arg value="class/CustomerList.class"/>
+         <arg value="class/CustomerList$Customer.class"/>
+         <arg value="--dest"/>
+         <arg value="covinst"/>
+      </java>
+   </target>
+
+   <!-- example command-line run of CustomerList with NO coverage data
+        collection, for demonstration only; JUnit does not need this -->
+   <target name="run" description="run CustomerList" depends="compile">
+      <echo message="Run CustomerList w/ args: Joe Jon Amy Joan"/>
+      <java classpath="class" classname="CustomerList" fork="true">
+         <arg value="Joe"/><arg value="Jon"/><arg value="Amy"/><arg value="Joan"/>
+      </java>
+   </target>
+
+   <!-- example command-line run of CustomerList WITH coverage data
+        collection, for demonstration only; JUnit does not need this -->
+   <target name="run-inst" description="run CustomerList" depends="instrument">
+      <echo message="Run instrumented CustomerList w/ args: Joe Jon Amy Joan"/>
+      <java classpath="covinst:${jacocodir}/jacocoagent.jar"
+            classname="CustomerList" fork="true">
+         <arg value="Joe"/><arg value="Jon"/><arg value="Amy"/><arg value="Joan"/>
+      </java>
+   </target>
+
+   <!-- execute JUnit tests and collect coverage information from Jacoco -->
+   <target name="junit" description="run JUnit tests" depends="instrument">
+      <!-- first delete existing jacoco data file so that there is no
+           extraneous coverage information left over from something else --> 
+      <delete>
+         <fileset dir="." includes="jacoco.exec"/>
+      </delete>
+      <java jar="${junitjar}" classpath="." fork="true">
+         <jvmarg value = "-javaagent:${jacocodir}/jacocoagent.jar=excludes=*"/>
+         <jvmarg value = "-XX:MaxJavaStackTraceDepth=2"/>
+         <arg value="--classpath=covinst:class"/>
+         <arg value="-c"/><arg value="CLTest"/>
+      </java>
+   </target>
+
+   <!-- use Jacoco to generate an HTML coverage report -->
+   <target name="report" description="generate jacoco report" 
+           depends="junit">
+      <java jar="${jacococlijar}" classpath="." fork="true">
+         <arg value="report"/>
+         <arg value="jacoco.exec"/>
+         <arg value="--classfiles"/>
+         <arg value="class"/>
+         <arg value="--sourcefiles"/>
+         <arg value="."/>
+         <arg value="--html"/>
+         <arg value="html"/>
+      </java>
+   </target>
+
+   <!-- clean up class and data files, but leave the report -->
+   <target name="codeclean">
+      <delete dir="class"/>
+      <delete dir="covinst"/>
+      <delete>
+         <fileset dir="." includes="jacoco.exec"/>
+         <fileset dir="." includes="*.class"/>
+      </delete>
+   </target>
+
+   <!-- clean up as 'codeclean' does, plus remove jacoco report -->
+   <target name="clean" depends="codeclean">
+      <delete dir="html"/>
+   </target>
+
+</project>
+

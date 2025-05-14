@@ -1,0 +1,43 @@
+#
+# Running the CustomerList program, JUnit, and JaCoCo from the command line
+# - these commands place and use class files in a "class" subdirectory
+# - JaCoCo places instrumented class files in a "covinst" subdirectory
+# These commands are meant to be examples to show how to use JUnit and
+# JaCoCo, separately and together. Both tools have lots more capability
+# and these are only basic examples!
+#
+
+# clean up all files that were created by tools
+rm -f *.class jacoco.exec 
+rm -rf class covinst html
+
+# plain compile of scoring programs into class directory
+javac -d class CustomerList.java 
+
+# plain run of one of the programs
+java -cp class CustomerList Ana Joe Jane
+
+# plain compile of JUnit tests into class directory
+javac -d class -cp ../tools/junit-platform-console-standalone-1.11.4.jar CustomerList.java CLTest.java
+
+# plain run of a JUnit test
+java -XX:MaxJavaStackTraceDepth=2 -jar ../tools/junit-platform-console-standalone-1.11.4.jar -cp class -c CLTest
+
+# Have JaCoCo instrument the class files and write them into "covinst" dir
+#corrected it to be
+java -jar ../tools/jacoco-0.8.12/lib/jacococli.jar instrument class/CustomerList.class class/CustomerList\$Customer.class --dest covinst
+#Or 
+java -jar ../tools/jacoco-0.8.12/lib/jacococli.jar instrument class/*.class --dest covinst
+
+# run the instrumented program (produces jacoco.exec)
+java -cp ../tools/jacoco-0.8.12/lib/jacocoagent.jar:covinst CustomerList Ana Joe Jane
+
+# run JaCoCo to produce an HTML report in an "html" subdirectory
+java -jar ../tools/jacoco-0.8.12/lib/jacococli.jar report jacoco.exec --classfiles class --sourcefiles . --html html
+
+# Run JaCoCo and JUnit together on instrumented class files
+java -XX:MaxJavaStackTraceDepth=2 -javaagent:../tools/jacoco-0.8.12/lib/jacocoagent.jar="excludes=*" -jar ../tools/junit-platform-console-standalone-1.11.4.jar -cp covinst:class -c CLTest
+
+# Run JaCoCo and JUnit on "normal" class files, doing automatic instrumentation
+java -XX:MaxJavaStackTraceDepth=2 -javaagent:../tools/jacoco-0.8.12/lib/jacocoagent.jar="excludes=*junit*" -jar ../tools/junit-platform-console-standalone-1.11.4.jar -cp class -c CLTest
+

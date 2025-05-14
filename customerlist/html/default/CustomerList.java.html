@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CustomerList.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCo Coverage Report</a> &gt; <a href="index.source.html" class="el_package">default</a> &gt; <span class="el_source">CustomerList.java</span></div><h1>CustomerList.java</h1><pre class="source lang-java linenums">//
+// Manage a list of customers; the public methods
+// have requirements specifications (detailed below);
+// private entities do not since they only help the
+// public methods. Specs for the public methods are
+// in their own header comments.
+//
+// For JUnit testing and JaCoCo reporting, you can
+// comment out print() and main() if you want, they
+// are not used or needed when running under JUnit.
+//
+
+public class CustomerList
+{
+
+<span class="fc" id="L16">private class Customer</span>
+{
+   String name;
+   int id;
+   Customer next;
+   public String toString() {
+<span class="fc" id="L22">      return name+&quot;(&quot;+id+&quot;)&quot;;</span>
+   }
+};
+
+private Customer customerList;
+
+// spec: create a new, empty customer list
+public CustomerList()
+<span class="fc" id="L30">{</span>
+<span class="fc" id="L31">   customerList = null;</span>
+<span class="fc" id="L32">}</span>
+
+// spec: return the customer formatted as &quot;name(id)&quot;
+// that has a name equal to the search name, or null if
+// none exist; the smallest id customer with the name
+// should be returned, if multiple of that name exist.
+public String find(String name)
+{
+<span class="fc" id="L40">   Customer cust = customerList;</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">   while (cust != null) {</span>
+<span class="fc bfc" id="L42" title="All 2 branches covered.">      if (name.equals(cust.name))</span>
+<span class="fc" id="L43">         return cust.toString();</span>
+<span class="fc" id="L44">      cust = cust.next;</span>
+   }
+<span class="fc" id="L46">   return null;</span>
+}
+
+// Error: 
+// - The program was counting customers inclusively with the lowestID but spec said to count outside inclusive range. 
+// cust.id &lt;= lowestID || cust.id &gt; highestID, code below is corrected.
+// - The prgram started the count with 1 instead of 0.
+// - The program was checking the next customer when it should check current customer up until cust == null.
+
+// spec: count the number of customers with either an ID 
+// that is outside of the range (lowestID, highestID), 
+// inclusive, or that has a name that begins and ends with
+// the oddStart and oddEnd strings.
+// Note:  
+// (1) for the &quot;CustomerList Testing - Junit &amp; Jacoco&quot; assignment, 
+//     please keep this method commented. 
+//     You do not need to test this method. 
+// (2) For the &quot;CustomerList Testing - MCDC&quot; assignment, 
+//     please uncomment this method and follow assignment instructions to test it. 
+public int countOutliers(int lowestID, int highestID, String oddStart, String oddEnd)
+{
+<span class="fc" id="L67">   int count = 0;</span>
+<span class="fc" id="L68">   Customer cust = customerList;</span>
+<span class="fc bfc" id="L69" title="All 2 branches covered.">   while (cust != null) {</span>
+<span class="fc bfc" id="L70" title="All 4 branches covered.">      if (cust.id &lt; lowestID || cust.id &gt; highestID ||</span>
+<span class="fc bfc" id="L71" title="All 4 branches covered.">          (cust.name.startsWith(oddStart) &amp;&amp; cust.name.endsWith(oddEnd)))</span>
+<span class="fc" id="L72">         count++;</span>
+<span class="fc" id="L73">      cust = cust.next;</span>
+   }
+<span class="fc" id="L75">   return count;</span>
+}
+
+// spec: add the given customer (name,id) to 
+// the customer list; at least one of (name,id) must 
+// be unique; if the (name,id) pair is already in 
+// the list, do not add it; return true if added,
+// false if not added.
+public boolean addCustomer(String name, int id)
+{
+<span class="fc" id="L85">   Customer newCust = new Customer();</span>
+<span class="fc" id="L86">   newCust.name = name;</span>
+<span class="fc" id="L87">   newCust.id = id;</span>
+<span class="fc bfc" id="L88" title="All 2 branches covered.">   if (customerList == null ||</span>
+<span class="fc bfc" id="L89" title="All 2 branches covered.">       name.compareTo(customerList.name) &lt; 0) {</span>
+<span class="fc" id="L90">      newCust.next = customerList;</span>
+<span class="fc" id="L91">      customerList = newCust;</span>
+<span class="fc" id="L92">      return true;</span>
+   }
+<span class="fc" id="L94">   Customer cust = customerList;</span>
+<span class="fc bfc" id="L95" title="All 2 branches covered.">   while (cust.next != null &amp;&amp; </span>
+<span class="fc bfc" id="L96" title="All 2 branches covered.">          name.compareTo(cust.next.name) &gt; 0) {</span>
+<span class="fc" id="L97">      cust = cust.next;</span>
+   }
+<span class="fc" id="L99">   newCust.next = cust.next;</span>
+<span class="fc" id="L100">   cust.next = newCust;</span>
+<span class="fc" id="L101">   return true;</span>
+}
+
+// Error: Count started with 1 and checked the next customer when it should
+//          check current customer up until cust == null.
+
+// spec: countBeginsWith: return the count of the number 
+// of customers that begin with the given name prefix.
+public int countBeginsWith(String prefix)
+{
+<span class="fc" id="L111">   int count = 0;</span>
+<span class="fc" id="L112">   Customer cust = customerList;</span>
+<span class="fc bfc" id="L113" title="All 2 branches covered.">   while (cust != null) {</span>
+<span class="fc bfc" id="L114" title="All 2 branches covered.">      if (cust.name.startsWith(prefix))</span>
+<span class="fc" id="L115">         count++;</span>
+<span class="fc" id="L116">      cust = cust.next;</span>
+   }
+<span class="fc" id="L118">   return count;</span>
+}
+
+// // spec: print the customer list in alphabetic order,
+// // one per line, formatted as &quot;Customer: name(id)&quot;; if
+// // multiple of the same name exist, they should be
+// // printed in ascending id order.
+// public void print()
+// {
+//    Customer cust = customerList;
+//    if (cust == null) {
+//       System.out.println(&quot;No customers!&quot;);
+//    }
+//    while (cust != null) {
+//       System.out.println(&quot;Customer: &quot; + cust);
+//       cust = cust.next;
+//    }
+// }
+//
+// // spec: adds command line arguments each as a
+// // unique customer name, uses position for ID;
+// // then tries to find the last entered customer
+// // name, and then counts names beginning with 'A'
+// public static void main(String[] args)
+// {
+//    int id = 1;
+//    CustomerList customers = new CustomerList();
+//    for (String arg: args) {
+//       customers.addCustomer(arg,id++);
+//    }
+//    customers.print();
+//    System.out.println(&quot;find: &quot; + args[args.length-1]
+//        + &quot; is &quot; + customers.find(args[args.length-1]));
+//    System.out.println(&quot;Customers beginning with A: &quot; +
+//                       customers.countBeginsWith(&quot;A&quot;));
+// }
+
+} //end class
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

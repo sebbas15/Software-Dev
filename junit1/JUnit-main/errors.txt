@@ -1,0 +1,18 @@
+Errors in Circle.java:
+    1. Found using scaleMultiply() and scaleFactor() with factor values of 4 and 0.5.
+        Was adding factor instead of multiplying. Changes + to *.
+
+    2. Found using simpleMoveNegPos() with x=1 and y=2. Wasn't reassigning center correctly. When it changes the y point for the center, it uses the xoffset instead of the yoffset. Replaced with yOffset value instead.
+
+Errors in Circle1.java:
+    1. Found using circlesDoIntersect2() with circle1(1,2,4) and circle4(-7,5,5).
+    Circles do intersent but outputted false. The equation is wrong. The equation just
+    used radius instead of the sum of the radius for x and y)
+
+Errors in Circel2.java:
+    1. Found using constructorTest(), with x=1 and y=2. Constructor mixed up the x and the y values. Swapped the x and y values to the right order.
+
+    2. Found using circlesDoIntersect2() with circle1(1,2,4) and circle4(-7,5,5).
+    Circles do intersent but outputted false. The equation is wrong. Equation should be
+    Math.abs(center.x - other.center.x) < (radius+other.radius) &&
+    Math.abs(center.y - other.center.y) < (radius+other.radius).

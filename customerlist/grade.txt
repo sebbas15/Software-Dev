@@ -1,0 +1,3 @@
+grade: 13
+- 5 days late (25% penalty) (-5)
+- missing fix for methods: find, addCustomer (-2)

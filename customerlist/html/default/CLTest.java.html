@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CLTest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCo Coverage Report</a> &gt; <a href="index.source.html" class="el_package">default</a> &gt; <span class="el_source">CLTest.java</span></div><h1>CLTest.java</h1><pre class="source lang-java linenums">// Sebastian Rodriguez
+
+// Error comments are at function header comments
+
+//
+// Example JUnit testing class for CustomerList
+//
+
+// Import all assertions and all annotations
+// - see docs for lists and descriptions
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.*;
+
+<span class="nc" id="L14">public class CLTest</span>
+{
+   
+// Data you need for each test case
+private CustomerList customerList;
+
+// Stuff you want to do before each test case
+@BeforeEach
+public void setup()
+{
+<span class="nc" id="L24">   System.out.println(&quot;\nCustomerList tests starting...&quot;);</span>
+<span class="nc" id="L25">   customerList = new CustomerList();</span>
+<span class="nc" id="L26">}</span>
+
+// Stuff you want to do after each test case
+@AfterEach
+public void teardown()
+{
+<span class="nc" id="L32">   System.out.println(&quot;\nCustomerList tests finished.&quot;);</span>
+<span class="nc" id="L33">}</span>
+
+@Test
+public void testAddCustomer()
+{
+<span class="nc" id="L38">   customerList.addCustomer(&quot;Ana&quot;,1);</span>
+<span class="nc" id="L39">   assertTrue(customerList.find(&quot;Ana&quot;).equals(&quot;Ana(1)&quot;));</span>
+<span class="nc" id="L40">}</span>
+
+@Test
+public void testPresentCustomer()
+{
+<span class="nc" id="L45">   customerList.addCustomer(&quot;Ana&quot;,1);</span>
+<span class="nc" id="L46">   customerList.addCustomer(&quot;Jonny&quot;,2);</span>
+<span class="nc" id="L47">   customerList.addCustomer(&quot;Jon&quot;,3);</span>
+<span class="nc" id="L48">   assertTrue(customerList.find(&quot;Jon&quot;).equals(&quot;Jon(3)&quot;));</span>
+<span class="nc" id="L49">}</span>
+
+@Test
+public void testPresentCustomer_subNameTest1()
+{
+<span class="nc" id="L54">   customerList.addCustomer(&quot;Jon&quot;,2);</span>
+<span class="nc" id="L55">   customerList.addCustomer(&quot;Jonny&quot;,3);</span>
+<span class="nc" id="L56">   customerList.addCustomer(&quot;Ana&quot;,1);</span>
+<span class="nc" id="L57">   assertTrue(customerList.find(&quot;Jonny&quot;).equals(&quot;Jonny(3)&quot;));</span>
+<span class="nc" id="L58">}</span>
+
+@Test
+public void testPresentCustomer_subNameTest2()
+{
+<span class="nc" id="L63">   customerList.addCustomer(&quot;Jonny&quot;,3);</span>
+<span class="nc" id="L64">   customerList.addCustomer(&quot;Jon&quot;,2);</span>
+<span class="nc" id="L65">   customerList.addCustomer(&quot;Ana&quot;,1);</span>
+<span class="nc" id="L66">   assertTrue(customerList.find(&quot;Jon&quot;).equals(&quot;Jon(2)&quot;));</span>
+<span class="nc" id="L67">}</span>
+
+@Test
+public void testNOTPresentCustomer()
+{
+<span class="nc" id="L72">   customerList.addCustomer(&quot;Ana&quot;,1);</span>
+<span class="nc" id="L73">   customerList.addCustomer(&quot;Jane&quot;,2);</span>
+<span class="nc" id="L74">   customerList.addCustomer(&quot;Jon&quot;,3);</span>
+<span class="nc bnc" id="L75" title="All 2 branches missed.">   assertTrue(customerList.find(&quot;Alex&quot;) == null);</span>
+<span class="nc" id="L76">}</span>
+
+@Test
+public void countOne_oneOccurence()
+{
+<span class="nc" id="L81">   customerList.addCustomer(&quot;Ana&quot;,1);</span>
+<span class="nc" id="L82">   customerList.addCustomer(&quot;Jane&quot;,2);</span>
+<span class="nc" id="L83">   customerList.addCustomer(&quot;Jon&quot;,3);</span>
+<span class="nc" id="L84">   int count = customerList.countBeginsWith(&quot;A&quot;);</span>
+<span class="nc bnc" id="L85" title="All 2 branches missed.">   assertTrue(count == 1);</span>
+<span class="nc" id="L86">}</span>
+
+@Test
+public void countTwo_twoOccurences()
+{
+<span class="nc" id="L91">   customerList.addCustomer(&quot;Ana&quot;,1);</span>
+<span class="nc" id="L92">   customerList.addCustomer(&quot;Jane&quot;,2);</span>
+<span class="nc" id="L93">   customerList.addCustomer(&quot;Jon&quot;,3);</span>
+<span class="nc" id="L94">   int count = customerList.countBeginsWith(&quot;J&quot;);</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">   assertTrue(count == 2);</span>
+<span class="nc" id="L96">}</span>
+
+@Test
+public void countTwo_notInList()
+{
+<span class="nc" id="L101">   customerList.addCustomer(&quot;Ana&quot;,1);</span>
+<span class="nc" id="L102">   customerList.addCustomer(&quot;Jane&quot;,2);</span>
+<span class="nc" id="L103">   customerList.addCustomer(&quot;Jon&quot;,3);</span>
+<span class="nc" id="L104">   int count = customerList.countBeginsWith(&quot;K&quot;);</span>
+<span class="nc bnc" id="L105" title="All 2 branches missed.">   assertTrue(count == 0);</span>
+<span class="nc" id="L106">}</span>
+
+/*
+ * 
+ * Each test method has a MC/DC pair that has one true decision and one false decision with only changing the test condition.
+ * 
+ * Table of test cases for countOutliers
+ * Test  LowerID(a)  HigherID(b)  OddStart(c) OddEnd(d)  (a|b)|(c&amp;d))
+ *   a       0            0           0           0           0
+ *           1            0           0           0           1
+ * 
+ *   b       0            0           0           0           0
+ *           0            1           0           0           1
+ * 
+ *   c       0            0           0           1           0
+ *           0            0           1           1           1
+ * 
+ *   d       0            0           1           0           0
+ *           0            0           1           1           1
+ */
+
+// Note:  
+// (1) for the &quot;CustomerList Testing - Junit &amp; Jacoco&quot; assignment, 
+//     please keep this method commented. 
+//     You do not need to test this method. 
+// (2) For the &quot;CustomerList Testing - MCDC&quot; assignment, 
+//     please uncomment this method and follow assignment instructions to test it. 
+@Test
+public void findOutliersSimple1()
+{
+<span class="nc" id="L136">   customerList.addCustomer(&quot;Joe&quot;,10);</span>
+<span class="nc" id="L137">   customerList.addCustomer(&quot;Zachy&quot;,12);</span>
+<span class="nc" id="L138">   customerList.addCustomer(&quot;Jon&quot;,13);</span>
+<span class="nc" id="L139">   int count = customerList.countOutliers(10,13,&quot;Z&quot;,&quot;y&quot;);</span>
+<span class="nc" id="L140">   assertEquals(1,count);</span>
+<span class="nc" id="L141">}</span>
+
+
+// Test for LowerID
+// MCDC row: 16 to 8
+
+@Test
+public void findOutliersTestLowerID()
+{
+<span class="nc" id="L150">   customerList.addCustomer(&quot;Joe&quot;,11);</span>
+<span class="nc" id="L151">   customerList.addCustomer(&quot;Anne&quot;,5);</span>
+<span class="nc" id="L152">   int count = customerList.countOutliers(10,13,&quot;Z&quot;,&quot;y&quot;);</span>
+<span class="nc" id="L153">   assertEquals(1,count);</span>
+<span class="nc" id="L154">}</span>
+
+// Test for HigherID
+// MCDC row: 16 and 12
+@Test
+public void findOutliersTestHigherID()
+{
+<span class="nc" id="L161">   customerList.addCustomer(&quot;Joe&quot;,11);</span>
+<span class="nc" id="L162">   customerList.addCustomer(&quot;Anne&quot;,50);</span>
+<span class="nc" id="L163">   int count = customerList.countOutliers(10,13,&quot;Z&quot;,&quot;y&quot;);</span>
+<span class="nc" id="L164">   assertEquals(1,count);</span>
+<span class="nc" id="L165">}</span>
+
+// Test for OddStart
+// MCDC row: 15 and 13
+@Test
+public void findOutliersTestOddStart()
+{
+<span class="nc" id="L172">   customerList.addCustomer(&quot;Joey&quot;,11);</span>
+<span class="nc" id="L173">   customerList.addCustomer(&quot;Zoey&quot;,12);</span>
+<span class="nc" id="L174">   int count = customerList.countOutliers(10,13,&quot;Z&quot;,&quot;y&quot;);</span>
+<span class="nc" id="L175">   assertEquals(1,count);</span>
+<span class="nc" id="L176">}</span>
+
+// Test for OddEnd
+// MCDC row: 14 and 13
+@Test
+public void findOutliersTestOddEnd()
+{
+<span class="nc" id="L183">   customerList.addCustomer(&quot;Zoe&quot;,11);</span>
+<span class="nc" id="L184">   customerList.addCustomer(&quot;Zoey&quot;,50);</span>
+<span class="nc" id="L185">   int count = customerList.countOutliers(10,13,&quot;Z&quot;,&quot;y&quot;);</span>
+<span class="nc" id="L186">   assertEquals(1,count);</span>
+<span class="nc" id="L187">}</span>
+
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
